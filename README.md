@@ -1,32 +1,43 @@
-# MacroLink for Minecraft — MD3
+# MacroLink — plugin Macro Deck
 
-## Jak to wstawić do prawdziwego projektu
+connects my minecraft mod  thrue WebSocket default ws://127.0.0.1:25599 
+with Macro Deck 3 and shows statistic from MC on MD3 as variables
 
-1. `dotnet new macrodeck-plugin -n MacroLink --pluginId com.tabsik12.minecraft-macrolink --pluginName "MacroLink for Minecraft"`
-2. Podmień wygenerowane `manifest.json`, `Program.cs`, `PluginIntegration.cs`
-3. Dorzuć `Services/`, `ConfigFlow/`, `Assets/icon.svg`
-4. Sprawdź w `manifest.json` czy `entrypoints.win-x64.executable` zgadza się z rzeczywistą nazwą `.exe` po `dotnet publish` (jeśli nazwiesz projekt inaczej niż `MacroLink`, popraw tę linię — tak jak przy ETS2)
+first instal my mc 26.2 mod https://github.com/tabsik30/Minecraft-Macro-link-Mod/tree/main
 
-## Co jest pewne
 
-- Cała architektura (Program.cs, IPluginIntegration, IVariableProvider, IConfigFlowProvider) — sprawdzona na ETS2
-- Nazwy pól WebSocket (`health`, `maxHealth`, `armor`, `hunger`, `x`/`y`/`z`, `dimension`, `biome`, `timeOfDay`, `air`, `maxAir`, `xpLevel`) oraz ucinanie namespace'u z `dimension`/`biome` — potwierdzone z prawdziwego kodu MD2 (`MacroLinkClient.cs`), nie zgadywane
-- Domyślny host `127.0.0.1`, port `25599` — z oryginalnego `MacroLinkConfigurator.cs`
-- Natychmiastowy restart połączenia po zapisaniu configu (`RequestReconnect()`) — odtwarza `Main.ReloadConnection()` → `client.Restart()` z oryginału
+Łączy się z modem MacroLink (Fabric, Minecraft 26.2) przez WebSocket
+(`ws://127.0.0.1:25599` domyślnie) i wystawia dane gracza jako **zmienne
+Macro Deck**, które możesz przypiąć do dowolnego przycisku (tekst, ikona,
+warunki itp. — standardowy mechanizm zmiennych w Macro Decku).
 
-## Świadome uproszczenia względem oryginału
+najpierw zainstaluj mojego moda do minecraft 26.2 https://github.com/tabsik30/Minecraft-Macro-link-Mod/tree/main
+## Zmienne, które ustawia plugin / variables that this plugin adds
 
-- Wszystkie wartości liczbowe (`health`, `armor`, `x`/`y`/`z` itd.) są typu **Text**, nie
-  Numeric — dokładnie jak w MD2 (`VariableType.String` w `VariableManager.SetValue`), i
-  dodatkowo unika to problemów z wymuszonym formatowaniem dziesiętnym, które mieliśmy
-  przy ETS2
-- `timeOfDay` zachowuje tę samą uwagę co oryginał: to surowy tick gry, nie godzina 0-24000
-- Dodałem `mc_connected` (bool) — czy WebSocket jest aktualnie połączony; tego nie było
-  w MD2, ale wydaje się przydatne do np. pokazania statusu połączenia na kafelku
+| Zmienna/Variabl  | Opis                                               |
+|------------------|----------------------------------------------------|
+| vrs.mc_health      | aktualne HP    actual HP                              |
+| vrs.mc_max_health  | maksymalne HP  mx HP                                |
+| vrs.mc_armor       | poziom pancerzaArmor Status                       |
+| vrs.mc_hunger      | poziom głodu   Hunger Status                        |
+| vrs.mc_x           | koordynata X   coordinate X                        |
+| vrs.mc_y           | koordynata Y   coordinate Y                        |
+| vrs.mc_z           | koordynata Z   coordinate Z                        |
+| vrs.mc_dimension   | wymiar (np. `minecraft:overworld`)  Dimension      |
+| vrs.mc_biome       | biom (np. `minecraft:plains`)       Biome          |
+| vrs.mc_game_time   | narazie zignorować jest dla testu Ignore this one is only for test |
+| vrs.mc_air         | pokazuje poziom powietrza  show air level           |
+| vrs.mc_max_air     | maksymalny poziom powietrza shows max air level    |
+| vrs.mc_xp_level    | poziom gracza  shows player level 
 
-## Test
 
-Po buildzie i instalacji: uruchom Minecraft z modem MacroLink, sprawdź `/_macrodeck/diagnostics`
-na porcie pluginu (jak przy ETS2) żeby potwierdzić `status: Connected`, potem sprawdź czy
-`mc_health` itd. faktycznie się aktualizują. Pamiętaj o restarcie Macro Decka po instalacji —
-beta cache'uje deklaracje capability i formatowanie do czasu restartu.
+## Zachowanie przy braku gry/ if game is not launched
+
+Jeśli Minecraft nie jest uruchomiony (albo mod jeszcze nie wystartował
+serwera), plugin próbuje połączyć się ponownie co 5 sekund w tle — nie
+trzeba nic klikać, samo się złapie jak odpalisz grę.
+
+if game is not lauched or server not started plugin will try to coonect evry 5sec in background
+it will connetc automaticly when game is launched 
+
+
