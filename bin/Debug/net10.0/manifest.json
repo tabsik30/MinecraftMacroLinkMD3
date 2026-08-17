@@ -1,0 +1,11 @@
+{
+  "manifestVersion": 1,
+  "id": "com.tabsik12.minecraft-macrolink",
+  "name": "MacroLink for Minecraft",
+  "version": "3.0.0",
+  "description": "Connects to the MacroLink Minecraft mod over WebSocket and exposes player health, hunger, position, dimension, biome and XP as Macro Deck variables.",
+  "icon": "Assets/icon.svg",
+  "entrypoints": {
+    "win-x64": { "executable": "MacroLink.exe" }
+  }
+}

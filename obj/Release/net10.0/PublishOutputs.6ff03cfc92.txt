@@ -1,0 +1,14 @@
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroLink.exe
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\manifest.json
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\Assets\icon.svg
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroLink.dll
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroLink.runtimeconfig.json
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroLink.pdb
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroDeck.Plugin.Hosting.dll
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroDeck.Plugin.Protocol.dll
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroDeck.Plugin.Serilog.dll
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroDeck.Sdk.dll
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\Serilog.dll
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\Serilog.Extensions.Hosting.dll
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\Serilog.Extensions.Logging.dll
+D:\Macro Deck 3 plugin\macro link\MacroLink\src\MacroLink\bin\Release\net10.0\publish\MacroLink.deps.json
