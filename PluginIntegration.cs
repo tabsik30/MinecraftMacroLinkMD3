@@ -1,4 +1,5 @@
 using System.Linq;
+using MacroLink.Actions;
 using MacroLink.ConfigFlow;
 using MacroLink.Services;
 using MacroDeck.Sdk;
@@ -9,14 +10,18 @@ using MacroDeck.Sdk.Variables;
 namespace MacroLink;
 
 /// <summary>
-/// The plugin's single integration. No actions - MacroLink is a pure data feeder,
-/// same as it was under Macro Deck 2 (SonSuchByte.MinecraftMacroLink had no
-/// PluginAction either, only variables).
+/// The plugin's single integration. MacroLink was a pure data feeder under Macro
+/// Deck 2 (no PluginAction, only variables) - XpProgressSliderAction is the one
+/// exception, added because MD3 sliders can only be action-driven, not bound
+/// directly to a variable (see the class remarks there).
 /// </summary>
 internal sealed class PluginIntegration(MinecraftLinkService link)
     : IPluginIntegration, IVariableProvider, IConfigFlowProvider
 {
-    public IReadOnlyList<IActionDefinition> Actions { get; } = [];
+    public IReadOnlyList<IActionDefinition> Actions { get; } =
+    [
+        new XpProgressSliderAction(link),
+    ];
 
     public async Task InitializeAsync(IIntegrationContext context)
     {
@@ -62,6 +67,7 @@ internal sealed class PluginIntegration(MinecraftLinkService link)
         new ProvidedVariable("mc_air", VariableType.Text, RefreshInterval: TimeSpan.FromSeconds(1)),
         new ProvidedVariable("mc_max_air", VariableType.Text, RefreshInterval: TimeSpan.FromSeconds(1)),
         new ProvidedVariable("mc_xp_level", VariableType.Text, RefreshInterval: TimeSpan.FromSeconds(1)),
+        new ProvidedVariable("mc_xp_progress_percent", VariableType.Text, RefreshInterval: TimeSpan.FromSeconds(1)),
     ];
 
     public Task<object?> GetValueAsync(string name, CancellationToken cancellationToken)
@@ -82,6 +88,7 @@ internal sealed class PluginIntegration(MinecraftLinkService link)
             "mc_air" => link.Air,
             "mc_max_air" => link.MaxAir,
             "mc_xp_level" => link.XpLevel,
+            "mc_xp_progress_percent" => Math.Round(link.XpProgressPercent).ToString("0"),
             _ => null,
         };
 

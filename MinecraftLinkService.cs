@@ -49,6 +49,10 @@ public sealed class MinecraftLinkService(ILogger<MinecraftLinkService> logger) :
     public string MaxAir { get; private set; } = "";
     public string XpLevel { get; private set; } = "";
 
+    // Numeric (not raw string, unlike the fields above) because the XP-progress
+    // slider action needs an actual double for its 0-100 range, not display text.
+    public double XpProgressPercent { get; private set; }
+
     // Called after a config flow save (host/port changed) to reconnect right away
     // instead of waiting out the current ReconnectDelay - mirrors the MD2 plugin's
     // Main.ReloadConnection() -> MacroLinkClient.Restart().
@@ -158,11 +162,26 @@ public sealed class MinecraftLinkService(ILogger<MinecraftLinkService> logger) :
             Air = ReadRaw(root, "air");
             MaxAir = ReadRaw(root, "maxAir");
             XpLevel = ReadRaw(root, "xpLevel");
+            if (TryGetDouble(root, "xpProgress", out var progress))
+            {
+                XpProgressPercent = Math.Clamp(progress * 100.0, 0, 100);
+            }
         }
         catch (JsonException ex)
         {
             logger.LogDebug(ex, "Could not parse a MacroLink message");
         }
+    }
+
+    private static bool TryGetDouble(JsonElement root, string property, out double value)
+    {
+        if (root.TryGetProperty(property, out var element) && element.TryGetDouble(out value))
+        {
+            return true;
+        }
+
+        value = default;
+        return false;
     }
 
     private static string ReadRaw(JsonElement root, string property) =>
