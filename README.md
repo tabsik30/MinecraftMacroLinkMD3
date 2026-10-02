@@ -29,7 +29,7 @@ required dependency: the plugin cannot receive Minecraft data without it running
 
 ## Use the plugin
 
-1. Install MacroLink for Minecraft in Macro Deck 3 using its Creator Portal listing.
+1. Install MacroLink for Minecraft in Macro Deck 3.
 2. Install the companion Fabric mod in Minecraft and start a world.
 3. In Macro Deck, open the plugin's configuration and set the WebSocket host and port if they differ
    from `127.0.0.1` and `25599`.
@@ -54,11 +54,6 @@ The variable identifiers and types are:
 | `mc-xp-progress` | Numeric | XP bar progress as a rounded percentage from 0 to 100 |
 | `mc-target-name` | Text | Target name, or an empty value when there is no target |
 | `mc-target-type` | Text | Target type, or `none` when there is no target |
-
-## Release
-
-Publishing a GitHub Release uploads the plugin package to the Macro Deck Creator Portal. Select
-the uploaded package in the Creator Portal to publish it.
 
 ## License
 
