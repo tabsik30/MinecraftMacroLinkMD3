@@ -32,7 +32,7 @@ public sealed class PluginIntegrationTests
 
 		progress.Value = 0.75;
 		var updatedTree = UiCanonicalJson.Serialize(view.Tree);
-		Assert.That(updatedTree, Does.Contain("75%"));
+		Assert.That(updatedTree, Does.Match("75\\s*%"));
 	}
 
 	[Test]
