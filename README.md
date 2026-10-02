@@ -19,7 +19,7 @@ are available when the companion mod includes target information in its snapshot
 
 ## Requirements
 
-- Macro Deck 3.
+- Macro Deck 3.0.0-beta.15 or later.
 - Minecraft with Fabric and the companion MacroLink mod installed.
 
 The companion mod is maintained separately:
