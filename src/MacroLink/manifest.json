@@ -10,7 +10,8 @@
   "aiDeclaration": {
     "interaction": false,
     "generatedContent": false,
-    "generatedAssets": true
+    "generatedAssets": true,
+    "services": ["Github Copilot"]
   },
   "icon": "Assets/icon.svg",
   "entrypoints": {
