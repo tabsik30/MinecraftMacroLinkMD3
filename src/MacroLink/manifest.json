@@ -16,7 +16,11 @@
   "icon": "Assets/icon.svg",
   "entrypoints": {
     "win-x64": {
-      "executable": "runtimes/win-x64/MacroLink.exe"
+      "executable": "runtimes/win-x64/MacroLink.dll",
+      "runtime": {
+        "kind": "FrameworkDependent",
+        "dotnetVersion": "10.0"
+      }
     }
   },
   "publisher": {
