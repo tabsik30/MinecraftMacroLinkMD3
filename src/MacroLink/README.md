@@ -25,5 +25,5 @@ configuration flow if needed.
 The game-time variable is the game's tick counter, not the time-of-day clock. Target values depend
 on the companion mod including target data in its WebSocket snapshots.
 
-See the repository [README](../../README.md) for setup, usage, variable identifiers, build, and
-release instructions.
+See the repository [README](../../README.md) for setup, usage, variable identifiers, and release
+instructions.

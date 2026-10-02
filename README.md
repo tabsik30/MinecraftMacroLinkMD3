@@ -21,7 +21,6 @@ are available when the companion mod includes target information in its snapshot
 
 - Macro Deck 3.
 - Minecraft with Fabric and the companion MacroLink mod installed.
-- .NET SDK 10.0 to build the plugin from source.
 
 The companion mod is maintained separately:
 [Minecraft MacroLink mod](https://github.com/tabsik30/Minecraft-Macro-link-Mod). Install the mod
@@ -56,35 +55,10 @@ The variable identifiers and types are:
 | `mc-target-name` | Text | Target name, or an empty value when there is no target |
 | `mc-target-type` | Text | Target type, or `none` when there is no target |
 
-## Build and test
-
-From the repository root:
-
-```bash
-dotnet build
-dotnet test
-```
-
-The Macro Deck packages use the `3.0.0-beta.14` SDK baseline, configured centrally in
-[`Directory.Packages.props`](Directory.Packages.props). The application is currently packaged for
-Windows x64.
-
-## Build a plugin package
-
-Install the Macro Deck plugin CLI, then build the Windows x64 plugin package. The build configuration
-in `src/MacroLink/macrodeck-build.json` supplies the self-contained publish settings.
-
-```bash
-dotnet tool install --global MacroDeck.Plugin.Cli --prerelease
-macrodeck-plugin build --source src/MacroLink --output publish
-macrodeck-plugin inspect --artifact publish/com.tabsik12.minecraft-macrolink-1.0.0.macroDeckPlugin
-```
-
 ## Release
 
-The GitHub Actions release workflow runs when a GitHub Release is published. It builds and uploads
-the plugin to the Macro Deck Creator Portal build library. The uploaded build must then be selected
-and released from the Creator Portal.
+Publishing a GitHub Release uploads the plugin package to the Macro Deck Creator Portal. Select
+the uploaded package in the Creator Portal to publish it.
 
 ## License
 
