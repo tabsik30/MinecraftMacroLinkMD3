@@ -20,10 +20,6 @@ namespace MacroLink.Services;
 /// the raw game tick counter, not a 0-24000 time-of-day value (same caveat the original
 /// plugin's comment carried over).
 ///
-/// Values are kept as raw strings (JsonElement.GetRawText(), same as the original's
-/// el.ToString()) rather than parsed doubles - the original plugin exposed everything
-/// as VariableType.String, and doing the same here sidesteps the decimal-formatting
-/// quirks we hit with ETS2's Numeric variables.
 /// </summary>
 public sealed class MinecraftLinkService(ILogger logger) : BackgroundService
 {
@@ -38,18 +34,18 @@ public sealed class MinecraftLinkService(ILogger logger) : BackgroundService
     public int Port { get; set; } = 25599;
 
     public bool IsConnected { get; private set; }
-    public string Health { get; private set; } = "";
-    public string MaxHealth { get; private set; } = "";
-    public string Armor { get; private set; } = "";
-    public string Hunger { get; private set; } = "";
+    public double? Health { get; private set; }
+    public double? MaxHealth { get; private set; }
+    public double? Armor { get; private set; }
+    public double? Hunger { get; private set; }
     public string PositionX { get; private set; } = "";
     public string PositionY { get; private set; } = "";
     public string PositionZ { get; private set; } = "";
     public string Dimension { get; private set; } = "";
     public string Biome { get; private set; } = "";
     public string GameTime { get; private set; } = "";
-    public string Air { get; private set; } = "";
-    public string MaxAir { get; private set; } = "";
+    public double? Air { get; private set; }
+    public double? MaxAir { get; private set; }
     public string XpLevel { get; private set; } = "";
     public string TargetName { get; private set; } = "";
     public string TargetType { get; private set; } = "none";
@@ -154,18 +150,18 @@ public sealed class MinecraftLinkService(ILogger logger) : BackgroundService
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
 
-            Health = ReadRaw(root, "health");
-            MaxHealth = ReadRaw(root, "maxHealth");
-            Armor = ReadRaw(root, "armor");
-            Hunger = ReadRaw(root, "hunger");
+            Health = ReadNumber(root, "health");
+            MaxHealth = ReadNumber(root, "maxHealth");
+            Armor = ReadNumber(root, "armor");
+            Hunger = ReadNumber(root, "hunger");
             PositionX = ReadRaw(root, "x");
             PositionY = ReadRaw(root, "y");
             PositionZ = ReadRaw(root, "z");
             Dimension = StripNamespace(ReadString(root, "dimension"));
             Biome = StripNamespace(ReadString(root, "biome"));
             GameTime = ReadRaw(root, "timeOfDay");
-            Air = ReadRaw(root, "air");
-            MaxAir = ReadRaw(root, "maxAir");
+            Air = ReadNumber(root, "air");
+            MaxAir = ReadNumber(root, "maxAir");
             XpLevel = ReadRaw(root, "xpLevel");
             var targetType = ReadString(root, "targetType");
             TargetType = string.IsNullOrEmpty(targetType) ? "none" : targetType;
@@ -196,6 +192,13 @@ public sealed class MinecraftLinkService(ILogger logger) : BackgroundService
 
     private static string ReadRaw(JsonElement root, string property) =>
         root.TryGetProperty(property, out var element) ? element.GetRawText() : "";
+
+    private static double? ReadNumber(JsonElement root, string property) =>
+        root.TryGetProperty(property, out var element)
+        && element.TryGetDouble(out var value)
+        && double.IsFinite(value)
+            ? value
+            : null;
 
     private static string ReadString(JsonElement root, string property) =>
         root.TryGetProperty(property, out var element) ? element.GetString() ?? "" : "";

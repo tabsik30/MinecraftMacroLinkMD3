@@ -19,7 +19,7 @@ are available when the companion mod includes target information in its snapshot
 
 ## Requirements
 
-- Macro Deck 3.0.0-beta.15 or later.
+- Macro Deck 3.0.0-beta.17 or later.
 - Minecraft with Fabric and the companion MacroLink mod installed.
 
 The companion mod is maintained separately:
@@ -41,15 +41,15 @@ The variable identifiers and types are:
 | Variable | Type | Value |
 | --- | --- | --- |
 | `mc-connected` | Boolean | Whether the plugin is connected to the mod |
-| `mc-health` | Text | Current health |
-| `mc-max-health` | Text | Maximum health |
-| `mc-armor` | Text | Armor |
-| `mc-hunger` | Text | Hunger |
+| `mc-health` | Numeric | Current health |
+| `mc-max-health` | Numeric | Maximum health |
+| `mc-armor` | Numeric | Armor |
+| `mc-hunger` | Numeric | Hunger |
 | `mc-x`, `mc-y`, `mc-z` | Text | Player coordinates |
 | `mc-dimension` | Text | Dimension, without the `minecraft:` prefix |
 | `mc-biome` | Text | Biome, without the `minecraft:` prefix |
 | `mc-game-time` | Text | Game tick counter |
-| `mc-air`, `mc-max-air` | Text | Current and maximum air supply |
+| `mc-air`, `mc-max-air` | Numeric | Current and maximum air supply |
 | `mc-xp-level` | Text | XP level |
 | `mc-xp-progress` | Numeric | XP bar progress as a rounded percentage from 0 to 100 |
 | `mc-target-name` | Text | Target name, or an empty value when there is no target |
