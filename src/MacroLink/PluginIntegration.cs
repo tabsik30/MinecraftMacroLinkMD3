@@ -39,22 +39,22 @@ internal sealed class PluginIntegration(MinecraftLinkService link)
         // via ConfigFlowResult.Complete) so they survive a plugin restart.
         var entries = await context.Config.GetEntriesAsync();
         var entry = entries.Count > 0 ? entries[0] : null;
-        if (entry is null)
+        if (entry is not null)
         {
-            return;
+            var host = await context.Config.GetStringAsync(entry.Id, "host");
+            if (!string.IsNullOrWhiteSpace(host))
+            {
+                link.Host = host;
+            }
+
+            var portText = await context.Config.GetStringAsync(entry.Id, "port");
+            if (int.TryParse(portText, out var port))
+            {
+                link.Port = port;
+            }
         }
 
-        var host = await context.Config.GetStringAsync(entry.Id, "host");
-        if (!string.IsNullOrWhiteSpace(host))
-        {
-            link.Host = host;
-        }
-
-        var portText = await context.Config.GetStringAsync(entry.Id, "port");
-        if (int.TryParse(portText, out var port))
-        {
-            link.Port = port;
-        }
+        await context.Variables.NotifyDeclarationsChangedAsync();
     }
 
     public Task ShutdownAsync() => Task.CompletedTask;

@@ -3,7 +3,7 @@
   "manifestVersion": 1,
   "id": "com.tabsik12.minecraft-macrolink",
   "name": "MacroLink for Minecraft",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Connects to the MacroLink Minecraft mod over WebSocket and exposes player data as Macro Deck variables, including a live green XP progress widget.",
   "license": "MIT",
   "repository": "https://github.com/tabsik30/MinecraftMacroLinkMD3",

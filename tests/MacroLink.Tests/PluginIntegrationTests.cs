@@ -45,5 +45,6 @@ public sealed class PluginIntegrationTests
 		});
 
 		Assert.DoesNotThrowAsync(harness.InitializeIntegrationsAsync);
+		Assert.That(harness.Context.Variables.DeclarationChanges, Is.EqualTo(1));
 	}
 }
