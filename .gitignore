@@ -157,7 +157,3 @@ $RECYCLE.BIN/
 testresults.trx
 TestResults
 publish
-
-# Locally packed Macro Deck SDK packages - see "Building against a local SDK build" in README.md
-local-feed/*
-!local-feed/.gitkeep

@@ -39,21 +39,19 @@ internal sealed class PluginIntegration(MinecraftLinkService link)
         // via ConfigFlowResult.Complete) so they survive a plugin restart.
         var entries = await context.Config.GetEntriesAsync();
         var entry = entries.Count > 0 ? entries[0] : null;
-        if (entry is null)
+        if (entry is not null)
         {
-            return;
-        }
+            var host = await context.Config.GetStringAsync(entry.Id, "host");
+            if (!string.IsNullOrWhiteSpace(host))
+            {
+                link.Host = host;
+            }
 
-        var host = await context.Config.GetStringAsync(entry.Id, "host");
-        if (!string.IsNullOrWhiteSpace(host))
-        {
-            link.Host = host;
-        }
-
-        var portText = await context.Config.GetStringAsync(entry.Id, "port");
-        if (int.TryParse(portText, out var port))
-        {
-            link.Port = port;
+            var portText = await context.Config.GetStringAsync(entry.Id, "port");
+            if (int.TryParse(portText, out var port))
+            {
+                link.Port = port;
+            }
         }
     }
 
@@ -64,18 +62,18 @@ internal sealed class PluginIntegration(MinecraftLinkService link)
     public IReadOnlyList<VariableDefinition> Variables { get; } =
     [
         VariableDefinition.Eager("mc-connected", VariableType.Boolean, refreshInterval: TimeSpan.FromSeconds(1)),
-        VariableDefinition.Eager("mc-health", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
-        VariableDefinition.Eager("mc-max-health", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
-        VariableDefinition.Eager("mc-armor", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
-        VariableDefinition.Eager("mc-hunger", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
+        VariableDefinition.Eager("mc-health", VariableType.Numeric, decimalPlaces: 1, refreshInterval: TimeSpan.FromSeconds(1)),
+        VariableDefinition.Eager("mc-max-health", VariableType.Numeric, decimalPlaces: 1, refreshInterval: TimeSpan.FromSeconds(1)),
+        VariableDefinition.Eager("mc-armor", VariableType.Numeric, decimalPlaces: 0, refreshInterval: TimeSpan.FromSeconds(1)),
+        VariableDefinition.Eager("mc-hunger", VariableType.Numeric, decimalPlaces: 0, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-x", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-y", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-z", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-dimension", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-biome", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-game-time", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
-        VariableDefinition.Eager("mc-air", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
-        VariableDefinition.Eager("mc-max-air", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
+        VariableDefinition.Eager("mc-air", VariableType.Numeric, decimalPlaces: 0, refreshInterval: TimeSpan.FromSeconds(1)),
+        VariableDefinition.Eager("mc-max-air", VariableType.Numeric, decimalPlaces: 0, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-xp-level", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-target-name", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
         VariableDefinition.Eager("mc-target-type", VariableType.Text, refreshInterval: TimeSpan.FromSeconds(1)),
@@ -87,18 +85,18 @@ internal sealed class PluginIntegration(MinecraftLinkService link)
         VariableReading reading = localId switch
         {
             "mc-connected" => VariableReading.Of(link.IsConnected),
-            "mc-health" => VariableReading.Of(link.Health),
-            "mc-max-health" => VariableReading.Of(link.MaxHealth),
-            "mc-armor" => VariableReading.Of(link.Armor),
-            "mc-hunger" => VariableReading.Of(link.Hunger),
+            "mc-health" => ReadNumeric(link.Health),
+            "mc-max-health" => ReadNumeric(link.MaxHealth),
+            "mc-armor" => ReadNumeric(link.Armor),
+            "mc-hunger" => ReadNumeric(link.Hunger),
             "mc-x" => VariableReading.Of(link.PositionX),
             "mc-y" => VariableReading.Of(link.PositionY),
             "mc-z" => VariableReading.Of(link.PositionZ),
             "mc-dimension" => VariableReading.Of(link.Dimension),
             "mc-biome" => VariableReading.Of(link.Biome),
             "mc-game-time" => VariableReading.Of(link.GameTime),
-            "mc-air" => VariableReading.Of(link.Air),
-            "mc-max-air" => VariableReading.Of(link.MaxAir),
+            "mc-air" => ReadNumeric(link.Air),
+            "mc-max-air" => ReadNumeric(link.MaxAir),
             "mc-xp-level" => VariableReading.Of(link.XpLevel),
             "mc-target-name" => VariableReading.Of(link.TargetName),
             "mc-target-type" => VariableReading.Of(link.TargetType),
@@ -108,6 +106,9 @@ internal sealed class PluginIntegration(MinecraftLinkService link)
 
         return ValueTask.FromResult(reading);
     }
+
+    private static VariableReading ReadNumeric(double? value) =>
+        value is { } number ? VariableReading.Of(number) : VariableReading.Unavailable;
 
     public ValueTask<VariableWriteResult> SetValueAsync(
         string localId,
