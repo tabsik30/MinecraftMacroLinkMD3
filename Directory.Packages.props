@@ -3,10 +3,10 @@
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
-        <!-- Keep the plugin aligned with the beta 17 SDK baseline. -->
+        <!-- Keep the plugin aligned with the stable Macro Deck 3 SDK. -->
         <CentralPackageFloatingVersionsEnabled>true</CentralPackageFloatingVersionsEnabled>
         <!-- One knob for every Macro Deck package, including builds against a local SDK. -->
-        <MacroDeckSdkVersion Condition="'$(MacroDeckSdkVersion)' == ''">3.0.0-beta.17</MacroDeckSdkVersion>
+        <MacroDeckSdkVersion Condition="'$(MacroDeckSdkVersion)' == ''">3.0.0</MacroDeckSdkVersion>
     </PropertyGroup>
 
     <ItemGroup>

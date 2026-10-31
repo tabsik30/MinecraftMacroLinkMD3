@@ -53,8 +53,6 @@ internal sealed class PluginIntegration(MinecraftLinkService link)
                 link.Port = port;
             }
         }
-
-        await context.Variables.NotifyDeclarationsChangedAsync();
     }
 
     public Task ShutdownAsync() => Task.CompletedTask;

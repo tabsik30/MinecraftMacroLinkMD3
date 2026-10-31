@@ -3,36 +3,30 @@
 This file must be kept up to date. When a rule here stops matching reality, or a new rule emerges from
 work in this repository, update this file as part of that change rather than leaving it to drift.
 
-This repository is the **starting point for a Macro Deck 3 out-of-process plugin**, and it is
-simultaneously the content of the `dotnet new macrodeck-plugin` template package. The plugin under
-`src/MacroLink/` is deliberately minimal: one integration that starts, registers and
-does nothing else. There is no sample code to delete - add what the plugin actually needs.
-
-Worked examples of every capability live in the
-[sample plugins repository](https://github.com/Macro-Deck-App/Macro-Deck-Sample-Plugins), not here.
-Read from there rather than growing this template.
+This repository contains the Macro Deck 3 out-of-process plugin for Minecraft. The plugin connects to
+the local MacroLink Fabric mod, exposes player snapshots as Macro Deck variables, and provides a
+configurable connection and an XP progress widget. This is an existing plugin repository, not the
+template package.
 
 [README.md](README.md) is the human-facing guide: how to build, how to run against a real host, how to
 pack. This file is the rule set for writing the plugin. Read it before changing code. The template
-package itself is covered by
-[packaging/README.md](https://github.com/Macro-Deck-App/Macro-Deck-Plugin-Template/blob/main/packaging/README.md).
+scaffolding instructions below apply only when creating a new plugin.
 
 ## Orientation
 
 ```
 src/MacroLink/
-  Program.cs             builder chain - three lines and a RunAsync
-  manifest.json          identity, icon, per-platform entrypoints
-  PluginIntegration.cs   the integration: lifecycle and capability opt-ins
-  Assets/icon.svg        the icon the manifest declares
-  Properties/launchSettings.json   the single real-host debug profile
+  Program.cs                  plugin host builder and startup
+  manifest.json               identity, icon, compatibility and entrypoint
+  PluginIntegration.cs        integration lifecycle and capability registration
+  MinecraftLinkService.cs     local WebSocket connection and player snapshots
+  MacroLinkConfigFlow.cs      connection configuration
+  XpProgressWidgetSession.cs  live XP progress widget
+  Assets/icon.svg             the icon the manifest declares
+  Properties/launchSettings.json
 tests/MacroLink.Tests/
   PluginIntegrationTests.cs   the plugin builds and initializes
 ```
-
-The template repository carries two more directories that a generated plugin does not:
-`.template.config/` (the `dotnet new` definition) and `packaging/` (the template package project, kept
-out of the solution on purpose).
 
 Authoritative upstream documentation, in the
 [Macro Deck 3 repository](https://github.com/Macro-Deck-App/Macro-Deck-3/tree/main/docs/plugin-development):
@@ -47,7 +41,7 @@ rather than this template's own code, look there rather than guessing.
 for you. A repository *cloned* from this template still carries the template's, so fix that first, in
 one change:
 
-1. `manifest.json` - `id` (reverse-domain, lowercase, at least two dot-joined kebab segments, e.g.
+1. `manifest.json` - `id` (reverse-domain, lowercase, at least three dot-joined kebab segments, e.g.
    `com.example.my-plugin`), `name`, `version`, `description`.
 2. Rename the project, the test project, the solution file and the namespace.
 3. Replace `Assets/icon.svg`. The manifest's `icon` path is the single source of truth and the host
@@ -216,6 +210,13 @@ capture a default before the config read finishes.
   timers, cancellation token registrations, websocket connections). Prefer `IAsyncDisposable`/`IDisposable`
   and DI-managed lifetimes over manual lifecycle management. Watch for event-handler subscriptions that
   outlive their subscriber - a common source of memory leaks in long-running plugin processes.
+- Regenerate [THIRD-PARTY-NOTICES](THIRD-PARTY-NOTICES) after dependency changes by building the
+  plugin and running:
+  ```powershell
+  python <SKILL_DIR>/scripts/inventory-dependencies.py src/MacroLink/bin/publish/win-x64 --notices THIRD-PARTY-NOTICES --header-name "MacroLink for Minecraft"
+  ```
+  Review asset attribution separately, and add a root `NOTICE` only when a shipped component
+  requires it.
 
 ## Verifying a change
 
@@ -245,15 +246,11 @@ it after any change to capability shape, cancellation handling or the manifest, 
 check going from pass to fail as a blocking regression. Most checks `SKIP` until the plugin declares
 capabilities.
 
-The Macro Deck packages float to the newest published version, so the commands above need no version
-argument. Only to test against SDK surface that is not published yet, pack it into `local-feed/` and
-pass `-p:MacroDeckSdkVersion=<version>` - see "Building against a local SDK build" in
-[README.md](README.md).
-
-Working in the template repository itself rather than in a plugin generated from it? Changing its shape
-(files, names, `.template.config/template.json`, `packaging/`) also needs a generated-project check -
-see
-[packaging/README.md](https://github.com/Macro-Deck-App/Macro-Deck-Plugin-Template/blob/main/packaging/README.md).
+Macro Deck package versions are controlled by `MacroDeckSdkVersion` in
+`Directory.Packages.props`. Keep the SDK and CLI versions aligned when updating them. Only to test
+against SDK surface that is not published yet, use a temporary local feed and pass
+`-p:MacroDeckSdkVersion=<version>` with an explicit restore source. Do not commit local packages or
+configure non-NuGet.org feeds in `NuGet.config`.
 
 ## Packing a plugin release
 
@@ -272,9 +269,8 @@ manifest; sign earlier and the digest will not match.
 
 - Work on a branch, not directly on `main`. Use `feature/`, `fix/`, `refactor/`, `chore/`, `docs/` or
   `ci/` with a short kebab-case description, and an issue number where one exists.
-- Publishing the template package requires a pushed semantic-version tag such as
-  `v3.0.0-preview.3`. The publish workflow removes the leading `v` and uses the rest as the NuGet
-  package version. A push to `main` alone never publishes.
+- Publishing a plugin requires a GitHub release with a semantic-version tag. The release workflow
+  builds and uploads the package to the Creator Portal. A push alone never publishes.
 - Keep changes focused; no unrelated reformatting.
 - Do not push or open a pull request unless asked.
 - Do not add AI attribution or co-author trailers.
